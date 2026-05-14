@@ -1,88 +1,863 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- SEO Meta Tags -->
-    <title>Friends of Marine Park | Marine Conservation Singapore</title>
-    <meta name="description" content="Join Friends of Marine Park to protect Singapore's marine biodiversity. Volunteer for beach clean-ups, citizen science dives, and conservation at Sisters' Islands and Bendera Bay.">
-    <meta name="keywords" content="marine conservation Singapore, Friends of Marine Park, Sisters' Islands Marine Park, volunteer, beach clean up, Bendera Bay">
-    
-    <!-- Open Graph Tags for Social Media Sharing -->
-    <meta property="og:title" content="Friends of Marine Park | Singapore">
-    <meta property="og:description" content="Dedicated to healthy seas, connected communities, and a resilient future. Join our marine conservation efforts.">
-    <meta property="og:type" content="website">
-    
-    <style>
-        /* Basic CSS for structure - replace with your actual CSS framework */
-        body { font-family: system-ui, sans-serif; line-height: 1.6; margin: 0; padding: 0; color: #333; }
-        header { background: #005f73; color: white; padding: 1rem 2rem; }
-        nav a { color: white; margin-right: 15px; text-decoration: none; font-weight: bold; }
-        main { padding: 2rem; max-width: 1200px; margin: auto; }
-        section { margin-bottom: 2rem; }
-        .cta-button { background: #0a9396; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; }
-        footer { background: #001219; color: white; text-align: center; padding: 1rem; margin-top: 2rem; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>Friends of Marine Park | Healthy Seas, Connected Communities</title>
+  <meta name="description" content="Friends of Marine Park (FMP) is Singapore's ground-led marine conservation community under NParks. We protect Sisters' Islands Marine Park through citizen science, education, and community stewardship." />
+  <meta name="keywords" content="Friends of Marine Park, Singapore marine conservation, Sisters Islands Marine Park, coral reef Singapore, NParks, marine park volunteer, Bendera Bay, hawksbill turtle Singapore" />
+  <meta name="author" content="Friends of Marine Park" />
+  <link rel="canonical" href="https://friendsofmarinepark.github.io/" />
+
+  <!-- Open Graph / Social -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Friends of Marine Park | Healthy Seas, Connected Communities" />
+  <meta property="og:description" content="Protecting Singapore's big blue backyard through conservation, education, and community action." />
+  <meta property="og:url" content="https://friendsofmarinepark.github.io/" />
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "NGO",
+    "name": "Friends of Marine Park",
+    "foundingDate": "2017",
+    "description": "A passionate, ground-led community network supported by Singapore's National Parks Board (NParks), bringing together representatives from over 40 marine-related organisations.",
+    "url": "https://friendsofmarinepark.github.io/",
+    "areaServed": "Singapore",
+    "memberOf": { "@type": "GovernmentOrganization", "name": "National Parks Board Singapore" }
+  }
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital@1&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── TOKENS ─────────────────────────────────────────── */
+    :root {
+      --deep:    #050f1a;
+      --abyss:   #080e18;
+      --ocean:   #0b2540;
+      --teal:    #0d7c7c;
+      --aqua:    #1eb8b8;
+      --foam:    #a8e6e6;
+      --sand:    #e8dfc8;
+      --bleach:  #f5f0e8;
+      --coral:   #e85d3c;
+      --gold:    #c9a84c;
+      --white:   #f7f4ef;
+      --muted:   rgba(168,230,230,0.55);
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body:    'DM Sans', sans-serif;
+    }
+
+    /* ─── RESET ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background: var(--deep);
+      color: var(--white);
+      font-family: var(--font-body);
+      font-weight: 300;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+    img, video { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+    ul { list-style: none; }
+
+    /* ─── NAV ────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 3rem;
+      transition: background 0.5s, backdrop-filter 0.5s;
+    }
+    nav.scrolled {
+      background: rgba(5,15,26,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(168,230,230,0.12);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--foam);
+    }
+    .nav-logo span { color: var(--aqua); font-style: italic; }
+    .nav-links { display: flex; gap: 2.5rem; }
+    .nav-links a {
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.25s;
+    }
+    .nav-links a:hover { color: var(--aqua); }
+
+    /* ─── HERO / SCROLL VIDEO SECTION ───────────────────── */
+    #hero {
+      position: relative;
+      height: 300vh; /* scroll driver */
+    }
+    .hero-sticky {
+      position: sticky; top: 0;
+      width: 100%; height: 100vh;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Video fills the sticky frame */
+    #hero-video {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: saturate(1.3) brightness(0.85);
+      transition: filter 0.05s linear;
+    }
+
+    /* Bleach overlay — opacity driven by JS scroll progress */
+    #bleach-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, #f5f0e8 0%, #e0d8c0 100%);
+      opacity: 0;
+      pointer-events: none;
+      mix-blend-mode: color;
+      transition: opacity 0.05s linear;
+    }
+
+    /* Desaturation layer */
+    #desat-overlay {
+      position: absolute; inset: 0;
+      background: rgba(220,210,195,0.0);
+      pointer-events: none;
+      transition: background 0.05s linear;
+    }
+
+    .hero-text {
+      position: relative; z-index: 2;
+      text-align: center;
+      padding: 2rem;
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--aqua);
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 1s 0.4s forwards;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3.2rem, 8vw, 7rem);
+      font-weight: 300;
+      line-height: 1.05;
+      color: var(--white);
+      text-shadow: 0 4px 40px rgba(0,0,0,0.55);
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 1.1s 0.65s forwards;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--foam);
+    }
+    .hero-sub {
+      margin-top: 1.5rem;
+      font-size: 1rem;
+      color: rgba(247,244,239,0.75);
+      max-width: 480px;
+      margin-left: auto; margin-right: auto;
+      opacity: 0;
+      transform: translateY(12px);
+      animation: fadeUp 1s 0.9s forwards;
+    }
+    .scroll-hint {
+      position: absolute; bottom: 2.4rem; left: 50%; transform: translateX(-50%);
+      z-index: 3;
+      display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+      font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(168,230,230,0.6);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+    .scroll-hint svg { width: 18px; opacity: 0.6; }
+
+    /* Bleach label that fades in mid-scroll */
+    #bleach-label {
+      position: absolute; bottom: 6rem; left: 50%; transform: translateX(-50%);
+      z-index: 4;
+      font-family: var(--font-display);
+      font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+      font-weight: 300;
+      letter-spacing: 0.04em;
+      color: var(--bleach);
+      text-shadow: 0 0 30px rgba(245,240,232,0.8);
+      opacity: 0;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    /* ─── CTA SECTION ────────────────────────────────────── */
+    #cta {
+      position: relative;
+      background: var(--abyss);
+      padding: 9rem 2rem 8rem;
+      text-align: center;
+      overflow: hidden;
+    }
+    #cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(13,124,124,0.28) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-kicker {
+      font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--aqua); margin-bottom: 1.4rem;
+    }
+    .cta-headline {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 6vw, 5.5rem);
+      font-weight: 300; line-height: 1.1;
+      color: var(--white);
+    }
+    .cta-headline em { font-style: italic; color: var(--foam); }
+    .cta-body {
+      margin: 1.8rem auto 0;
+      max-width: 560px;
+      font-size: 1.05rem;
+      color: rgba(247,244,239,0.68);
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 2.8rem;
+      padding: 1rem 2.8rem;
+      border: 1px solid var(--aqua);
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--aqua);
+      background: transparent;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.35s;
+    }
+    .btn::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--teal);
+      transform: translateY(101%);
+      transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+      z-index: -1;
+    }
+    .btn:hover { color: var(--white); }
+    .btn:hover::after { transform: translateY(0); }
+
+    /* ─── WAVE DIVIDER ───────────────────────────────────── */
+    .wave-divider { line-height: 0; }
+    .wave-divider svg { width: 100%; display: block; }
+
+    /* ─── ABOUT SECTION ──────────────────────────────────── */
+    #about {
+      background: var(--ocean);
+      padding: 7rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    #about::after {
+      content: '';
+      position: absolute; right: -8%; top: 10%;
+      width: 55vw; height: 55vw; max-width: 700px; max-height: 700px;
+      border-radius: 50%;
+      border: 1px solid rgba(13,124,124,0.18);
+      pointer-events: none;
+    }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+    .section-label {
+      font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--aqua); margin-bottom: 1rem; display: block;
+    }
+    .section-heading {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 300; line-height: 1.15;
+      color: var(--foam);
+      margin-bottom: 1.6rem;
+    }
+    .section-heading em { font-style: italic; }
+    .about-body p { color: rgba(247,244,239,0.72); margin-bottom: 1.2rem; }
+    .about-body p:last-child { margin-bottom: 0; }
+    .vision-card {
+      background: rgba(13,124,124,0.12);
+      border: 1px solid rgba(13,124,124,0.3);
+      border-radius: 2px;
+      padding: 2.2rem;
+      margin-top: 2rem;
+    }
+    .vision-card .vc-label {
+      font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 0.8rem; display: block;
+    }
+    .vision-card blockquote {
+      font-family: var(--font-display);
+      font-size: 1.5rem; font-style: italic; font-weight: 300;
+      line-height: 1.4; color: var(--foam);
+    }
+    .vision-card cite {
+      display: block; margin-top: 1rem;
+      font-size: 0.8rem; font-style: normal;
+      color: rgba(168,230,230,0.5);
+      letter-spacing: 0.05em;
+    }
+
+    /* Stat pills */
+    .stats-row {
+      display: flex; gap: 1.5rem; flex-wrap: wrap; margin-top: 3rem;
+    }
+    .stat-pill {
+      flex: 1; min-width: 130px;
+      background: rgba(5,15,26,0.45);
+      border: 1px solid rgba(168,230,230,0.15);
+      border-radius: 2px;
+      padding: 1.4rem 1.2rem;
+      text-align: center;
+    }
+    .stat-pill .num {
+      font-family: var(--font-display);
+      font-size: 2.4rem; font-weight: 300;
+      color: var(--aqua); display: block; line-height: 1;
+    }
+    .stat-pill .lbl {
+      font-size: 0.72rem; letter-spacing: 0.1em;
+      color: rgba(168,230,230,0.55); margin-top: 0.4rem; display: block;
+    }
+
+    /* ─── WHERE WE WORK ──────────────────────────────────── */
+    #locations {
+      background: var(--deep);
+      padding: 7rem 2rem;
+    }
+    .location-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5px;
+      margin-top: 4rem;
+      border: 1.5px solid rgba(13,124,124,0.25);
+    }
+    .location-card {
+      padding: 3rem 2.6rem;
+      background: rgba(8,14,24,0.6);
+      border: 1.5px solid rgba(13,124,124,0.25);
+      position: relative;
+      overflow: hidden;
+      transition: background 0.4s;
+    }
+    .location-card:hover { background: rgba(13,124,124,0.09); }
+    .location-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 2px; height: 0;
+      background: var(--aqua);
+      transition: height 0.4s;
+    }
+    .location-card:hover::before { height: 100%; }
+    .loc-number {
+      font-family: var(--font-display);
+      font-size: 4rem; font-weight: 300; font-style: italic;
+      color: rgba(13,124,124,0.22);
+      line-height: 1; margin-bottom: 1rem;
+    }
+    .loc-name {
+      font-family: var(--font-display);
+      font-size: 1.5rem; font-weight: 300;
+      color: var(--foam); margin-bottom: 0.8rem;
+    }
+    .loc-detail {
+      font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--teal); margin-bottom: 1.2rem;
+    }
+    .loc-body { font-size: 0.92rem; color: rgba(247,244,239,0.62); line-height: 1.75; }
+
+    /* ─── INITIATIVES ────────────────────────────────────── */
+    #initiatives {
+      background: var(--ocean);
+      padding: 7rem 2rem;
+    }
+    .init-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+      margin-top: 4rem;
+    }
+    .init-card {
+      padding: 2.4rem;
+      border-top: 1px solid rgba(168,230,230,0.2);
+      position: relative;
+    }
+    .init-number {
+      font-family: var(--font-display);
+      font-size: 0.8rem; font-style: italic;
+      color: var(--teal); margin-bottom: 1.2rem; display: block;
+    }
+    .init-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem; font-weight: 300;
+      color: var(--foam); margin-bottom: 1rem; line-height: 1.3;
+    }
+    .init-items { display: flex; flex-direction: column; gap: 1rem; }
+    .init-item {}
+    .init-item-title {
+      font-size: 0.82rem; font-weight: 500;
+      color: var(--aqua); margin-bottom: 0.3rem;
+      letter-spacing: 0.04em;
+    }
+    .init-item-body { font-size: 0.88rem; color: rgba(247,244,239,0.6); line-height: 1.65; }
+
+    /* ─── GET INVOLVED ───────────────────────────────────── */
+    #get-involved {
+      background: var(--deep);
+      padding: 9rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+    #get-involved::before {
+      content: '';
+      position: absolute; left: -15%; top: -20%;
+      width: 70vw; height: 70vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(13,124,124,0.13) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .involve-header {
+      text-align: center;
+      margin-bottom: 5rem;
+    }
+    .involve-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2rem;
+    }
+    .involve-card {
+      background: rgba(8,14,24,0.5);
+      border: 1px solid rgba(168,230,230,0.1);
+      padding: 2.8rem 2.2rem;
+      text-align: center;
+      transition: border-color 0.35s, transform 0.35s;
+      cursor: default;
+    }
+    .involve-card:hover {
+      border-color: rgba(13,124,124,0.5);
+      transform: translateY(-4px);
+    }
+    .involve-icon {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: rgba(13,124,124,0.18);
+      border: 1px solid rgba(13,124,124,0.35);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.6rem;
+    }
+    .involve-icon svg { width: 22px; stroke: var(--aqua); fill: none; stroke-width: 1.5; }
+    .involve-title {
+      font-family: var(--font-display);
+      font-size: 1.4rem; font-weight: 300;
+      color: var(--foam); margin-bottom: 0.8rem;
+    }
+    .involve-body { font-size: 0.9rem; color: rgba(247,244,239,0.6); line-height: 1.7; }
+
+    /* ─── FOOTER ─────────────────────────────────────────── */
+    footer {
+      background: var(--abyss);
+      border-top: 1px solid rgba(168,230,230,0.08);
+      padding: 4rem 3rem 3rem;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
+    .footer-brand {
+      font-family: var(--font-display);
+      font-size: 1.05rem; font-weight: 300;
+      color: var(--foam); letter-spacing: 0.06em;
+    }
+    .footer-brand span { display: block; font-size: 0.72rem; letter-spacing: 0.14em; color: var(--teal); margin-top: 0.3rem; text-transform: uppercase; }
+    .footer-links { display: flex; flex-direction: column; gap: 0.5rem; }
+    .footer-links a { font-size: 0.8rem; color: rgba(168,230,230,0.45); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--aqua); }
+    .footer-copy { font-size: 0.72rem; color: rgba(168,230,230,0.25); width: 100%; }
+
+    /* ─── REVEAL ANIMATION ───────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── KEYFRAMES ──────────────────────────────────────── */
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; transform: translateX(-50%) translateY(0); }
+      50% { opacity: 1; transform: translateX(-50%) translateY(4px); }
+    }
+
+    /* ─── MOBILE ─────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .two-col, .location-cards, .init-grid, .involve-cards {
+        grid-template-columns: 1fr;
+      }
+      .stats-row { gap: 1rem; }
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <h1>Friends of Marine Park</h1>
-        <p>Healthy Seas, Connected Communities, and a Resilient Future</p>
-        <nav>
-            <a href="#about">About Us</a>
-            <a href="#locations">Where We Work</a>
-            <a href="#initiatives">Our Initiatives</a>
-            <a href="#get-involved">Get Involved</a>
-        </nav>
-    </header>
+  <!-- ── NAV ──────────────────────────────────────────────── -->
+  <nav id="main-nav">
+    <div class="nav-logo">Friends of <span>Marine Park</span></div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#locations">Where We Work</a>
+      <a href="#initiatives">Initiatives</a>
+      <a href="#get-involved">Get Involved</a>
+    </div>
+  </nav>
 
-    <main>
-        <!-- H1 used strictly for the main page topic -->
-        <section id="hero">
-            <h2>Protecting Singapore's Big Blue Backyard</h2>
-            <p>Formed in 2017, we are a community network supported by NParks, bringing together divers, boaters, and volunteers to protect our marine biodiversity.</p>
-            <a href="#get-involved" class="cta-button">Volunteer With Us</a>
-        </section>
+  <!-- ── HERO (scroll-driven bleaching) ───────────────────── -->
+  <section id="hero" aria-label="Hero: coral bleaching scroll animation">
+    <div class="hero-sticky">
+      <video
+        id="hero-video"
+        src="mp_.mp4"
+        autoplay loop muted playsinline
+        aria-hidden="true"
+      ></video>
 
-        <section id="about">
-            <h2>Who We Are</h2>
-            <p>Guided by our Chairman, Stephen Beng, the Friends of Marine Park (FMP) acts as a bridge between the government and over 40 marine-related organizations. We balance recreation with conservation to cultivate a strong conservation culture in Singapore.</p>
-        </section>
+      <!-- layered overlays driven by JS -->
+      <div id="bleach-overlay" aria-hidden="true"></div>
+      <div id="desat-overlay"  aria-hidden="true"></div>
 
-        <section id="locations">
-            <h2>Where We Work</h2>
-            <article>
-                <h3>Sisters' Islands Marine Park</h3>
-                <p>Singapore's first marine park spanning 40 hectares. We support safe interaction with the lagoon tidal pools and underwater dive trails.</p>
-            </article>
-            <article>
-                <h3>Bendera Bay (St John’s Island)</h3>
-                <p>A 3.9-hectare sheltered lagoon and our dedicated shared space for researchers, educators, and the community to collaborate safely.</p>
-            </article>
-        </section>
+      <div class="hero-text">
+        <p class="hero-eyebrow">Singapore · Est. 2017</p>
+        <h1 class="hero-title">
+          Friends of<br /><em>Marine Park</em>
+        </h1>
+        <p class="hero-sub">Healthy Seas, Connected Communities, and a Resilient Future.</p>
+      </div>
 
-        <section id="initiatives">
-            <h2>What We Do</h2>
-            <ul>
-                <li><strong>Conservation:</strong> Hawksbill Turtle Headstarting and Citizen Science biodiversity dives.</li>
-                <li><strong>Education:</strong> Guided intertidal walks and marine heritage appreciation.</li>
-                <li><strong>Stewardship:</strong> Establishing Codes of Conduct and hosting sustainable fishing workshops.</li>
-            </ul>
-        </section>
+      <div id="bleach-label" aria-live="polite">
+        Coral bleaching is happening now.<br />
+        <span style="font-size:0.7em; letter-spacing:0.12em; text-transform:uppercase; font-family:var(--font-body); color:rgba(200,190,170,0.7);">Rising ocean temperatures strip coral of colour and life.</span>
+      </div>
 
-        <section id="get-involved">
-            <h2>Take Action Today</h2>
-            <p>We welcome individuals who have the sea at heart. Join our regular beach clean-ups at Bendera Bay or sign up for a citizen science dive.</p>
-            <!-- Replace "#" with actual form links -->
-            <a href="#" class="cta-button">Sign Up for Workshops</a> 
-        </section>
-    </main>
+      <div class="scroll-hint" id="scroll-hint">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        Scroll
+      </div>
+    </div>
+  </section>
 
-    <footer>
-        <p>&copy; 2026 Friends of Marine Park Singapore. Supported by NParks.</p>
-    </footer>
+  <!-- ── CTA ──────────────────────────────────────────────── -->
+  <section id="cta">
+    <div class="section-inner">
+      <p class="cta-kicker reveal">Be the change our oceans need</p>
+      <h2 class="cta-headline reveal">Become a <em>Friend<br />of Marine Park</em></h2>
+      <p class="cta-body reveal">
+        Protecting Singapore's big blue backyard is a collective effort.
+        Join a community of divers, educators, researchers, and volunteers
+        who believe the sea deserves a future.
+      </p>
+      <a href="#get-involved" class="btn reveal">Get Involved</a>
+    </div>
+  </section>
 
+  <!-- ── ABOUT ─────────────────────────────────────────────── -->
+  <div class="wave-divider">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#0b2540"/>
+    </svg>
+  </div>
+
+  <section id="about">
+    <div class="section-inner">
+      <div class="two-col">
+        <div class="reveal">
+          <span class="section-label">Who We Are</span>
+          <h2 class="section-heading">A community<br /><em>rooted in the sea</em></h2>
+          <div class="about-body">
+            <p>Formed in 2017, Friends of Marine Park (FMP) is a passionate, ground-led community network supported by Singapore's National Parks Board (NParks) under the "Friends of the Parks" initiative.</p>
+            <p>FMP acts as a bridge between the government and the community, bringing together representatives from over 40 marine-related organisations — divers, anglers, boaters, educators, marine researchers, and dedicated volunteers.</p>
+          </div>
+          <div class="stats-row">
+            <div class="stat-pill">
+              <span class="num">40+</span>
+              <span class="lbl">Partner Organisations</span>
+            </div>
+            <div class="stat-pill">
+              <span class="num">2017</span>
+              <span class="lbl">Year Founded</span>
+            </div>
+            <div class="stat-pill">
+              <span class="num">40ha</span>
+              <span class="lbl">Marine Park Area</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal" style="transition-delay:0.15s">
+          <div class="vision-card">
+            <span class="vc-label">Our Vision</span>
+            <blockquote>
+              "Healthy Seas, Connected Communities, and a Resilient Future."
+            </blockquote>
+            <cite>— Stephen Beng, Chairman, Friends of Marine Park</cite>
+          </div>
+          <div class="about-body" style="margin-top:2rem">
+            <p>We believe in fostering trust among different sea users, balancing recreation with conservation, and cultivating a strong "conservation culture" to protect Singapore's marine biodiversity.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WHERE WE WORK ─────────────────────────────────────── -->
+  <section id="locations">
+    <div class="section-inner">
+      <div class="reveal">
+        <span class="section-label">Where We Work</span>
+        <h2 class="section-heading">Our waters,<br /><em>our responsibility</em></h2>
+        <p style="color:rgba(247,244,239,0.6); max-width:560px; margin-top:0.5rem;">
+          Our primary conservation and community efforts are centred around Singapore's Southern Islands.
+        </p>
+      </div>
+      <div class="location-cards reveal" style="transition-delay:0.2s">
+        <div class="location-card">
+          <div class="loc-number">01</div>
+          <h3 class="loc-name">Sisters' Islands Marine Park</h3>
+          <p class="loc-detail">Singapore's First &amp; Only Marine Park · 40 Hectares</p>
+          <p class="loc-body">
+            A sanctuary for marine life, featuring a 220m floating boardwalk, lagoon tidal pools, and underwater dive trails. We support outreach and education here, helping visitors safely interact with the park's rich ecosystems.
+          </p>
+        </div>
+        <div class="location-card">
+          <div class="loc-number">02</div>
+          <h3 class="loc-name">Bendera Bay</h3>
+          <p class="loc-detail">St John's Island · 3.9 Hectares</p>
+          <p class="loc-body">
+            A sheltered lagoon featuring a rich mix of mangroves, corals, sandy shores, and seagrass. Bendera Bay is FMP's dedicated shared space where researchers, boaters, and educators collaborate safely.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── INITIATIVES ────────────────────────────────────────── -->
+  <div class="wave-divider">
+    <svg viewBox="0 0 1440 60" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,30 C360,0 1080,60 1440,30 L1440,60 L0,60 Z" fill="#0b2540"/>
+    </svg>
+  </div>
+
+  <section id="initiatives">
+    <div class="section-inner">
+      <div class="reveal">
+        <span class="section-label">What We Do</span>
+        <h2 class="section-heading">Our <em>Initiatives</em></h2>
+        <p style="color:rgba(247,244,239,0.6); max-width:560px; margin-top:0.5rem;">
+          We champion initiatives that allow the public to enjoy our waters responsibly while actively preserving marine ecosystems.
+        </p>
+      </div>
+      <div class="init-grid">
+        <div class="init-card reveal" style="transition-delay:0.05s">
+          <span class="init-number">01 —</span>
+          <h3 class="init-title">Conservation<br />&amp; Research</h3>
+          <div class="init-items">
+            <div class="init-item">
+              <p class="init-item-title">Hawksbill Turtle Headstarting</p>
+              <p class="init-item-body">We support NParks and the Singapore Oceanarium to protect the critically endangered Hawksbill sea turtle, rearing hatchlings until they are strong enough to survive in the wild.</p>
+            </div>
+            <div class="init-item">
+              <p class="init-item-title">Citizen Science Dives</p>
+              <p class="init-item-body">Volunteer research divers conduct regular biodiversity surveys and coral monitoring at Bendera Bay and the Sisters' Islands to track the health of local ecosystems.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="init-card reveal" style="transition-delay:0.15s">
+          <span class="init-number">02 —</span>
+          <h3 class="init-title">Education<br />&amp; Outreach</h3>
+          <div class="init-items">
+            <div class="init-item">
+              <p class="init-item-title">Intertidal Walks</p>
+              <p class="init-item-body">FMP volunteers guide the public through intertidal zones during low tide, educating them on how to interact gently with marine life such as Haddon's carpet anemones, flower crabs, and sea stars.</p>
+            </div>
+            <div class="init-item">
+              <p class="init-item-title">Heritage Appreciation</p>
+              <p class="init-item-body">At Bendera Bay, we collaborate with former islanders to display traditional kolek (wooden boats) and share the heritage of Singapore's coastal communities.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="init-card reveal" style="transition-delay:0.25s">
+          <span class="init-number">03 —</span>
+          <h3 class="init-title">Community<br />&amp; Stewardship</h3>
+          <div class="init-items">
+            <div class="init-item">
+              <p class="init-item-title">Codes of Conduct</p>
+              <p class="init-item-body">Working with kayakers, boaters, and guides to develop and implement strict, environmentally responsible Codes of Conduct for using marine spaces.</p>
+            </div>
+            <div class="init-item">
+              <p class="init-item-title">Hands-On Workshops</p>
+              <p class="init-item-body">Regular sustainable fishing workshops, coastal beach clean-ups, and public outreach booths to raise awareness about the impact of pollution on coastal ecology.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GET INVOLVED ───────────────────────────────────────── -->
+  <section id="get-involved">
+    <div class="section-inner">
+      <div class="involve-header reveal">
+        <span class="section-label">Get Involved</span>
+        <h2 class="section-heading" style="color:var(--white)">
+          The ocean<br /><em>needs you</em>
+        </h2>
+        <p style="color:rgba(247,244,239,0.6); max-width:520px; margin: 1rem auto 0;">
+          Protecting Singapore's big blue backyard is a collective effort. We welcome individuals and organisations who have the sea at heart.
+        </p>
+      </div>
+      <div class="involve-cards">
+        <div class="involve-card reveal" style="transition-delay:0.05s">
+          <div class="involve-icon">
+            <svg viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 0 0-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 0 1 5.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 0 1 9.288 0M15 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/></svg>
+          </div>
+          <h3 class="involve-title">Volunteer</h3>
+          <p class="involve-body">Join our regular beach clean-ups and help us weigh and remove marine debris from Bendera Bay. Every pair of hands makes a difference.</p>
+        </div>
+        <div class="involve-card reveal" style="transition-delay:0.15s">
+          <div class="involve-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
+          </div>
+          <h3 class="involve-title">Participate</h3>
+          <p class="involve-body">Sign up for our sustainable fishing workshops or citizen science dives. Experience the marine park first-hand while contributing to its protection.</p>
+        </div>
+        <div class="involve-card reveal" style="transition-delay:0.25s">
+          <div class="involve-icon">
+            <svg viewBox="0 0 24 24"><path d="M11 5.882V19.24a1.76 1.76 0 0 1-3.417.592l-2.147-6.15M18 13a3 3 0 1 0 0-6M5.436 13.683A4.001 4.001 0 0 0 7.028 20h3a4 4 0 0 0 3.945-3.375L14 12"/></svg>
+          </div>
+          <h3 class="involve-title">Advocate</h3>
+          <p class="involve-body">Practice "light-touch" eco-tourism and follow our marine Codes of Conduct whenever you visit the Southern Islands. Inspire others to do the same.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ──────────────────────────────────────────────── -->
+  <footer>
+    <div>
+      <div class="footer-brand">
+        Friends of Marine Park
+        <span>Est. 2017 · Singapore · Under NParks "Friends of the Parks" initiative</span>
+      </div>
+    </div>
+    <div class="footer-links">
+      <a href="#about">About Us</a>
+      <a href="#locations">Where We Work</a>
+      <a href="#initiatives">Our Initiatives</a>
+      <a href="#get-involved">Get Involved</a>
+    </div>
+    <p class="footer-copy">© 2025 Friends of Marine Park. All rights reserved.</p>
+  </footer>
+
+  <!-- ── SCRIPTS ─────────────────────────────────────────────── -->
+  <script>
+    /* ── NAV scroll class ─── */
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    /* ── Hero scroll-driven bleaching ─── */
+    const hero          = document.getElementById('hero');
+    const bleachOverlay = document.getElementById('bleach-overlay');
+    const desatOverlay  = document.getElementById('desat-overlay');
+    const heroVideo     = document.getElementById('hero-video');
+    const bleachLabel   = document.getElementById('bleach-label');
+    const scrollHint    = document.getElementById('scroll-hint');
+
+    function lerp(a, b, t) { return a + (b - a) * t; }
+
+    function onScroll() {
+      const heroH   = hero.offsetHeight;
+      const viewH   = window.innerHeight;
+      const scrolled = window.scrollY;           // px into the 300vh section
+      const total    = heroH - viewH;            // scrollable distance
+      const p        = Math.min(Math.max(scrolled / total, 0), 1); // 0→1
+
+      // Phase 1 (0→0.5): increase bleach overlay
+      // Phase 2 (0.5→1): label appears
+      const bleachP = Math.min(p * 2, 1);
+      const labelP  = Math.max((p - 0.5) * 2, 0);
+
+      bleachOverlay.style.opacity = (bleachP * 0.92).toFixed(3);
+
+      // desaturate video
+      const sat = lerp(1.3, 0, bleachP);
+      const bri = lerp(0.85, 1.05, bleachP);
+      heroVideo.style.filter = `saturate(${sat.toFixed(2)}) brightness(${bri.toFixed(2)})`;
+
+      // sepia tint
+      const desatAlpha = bleachP * 0.6;
+      desatOverlay.style.background = `rgba(210,195,165,${desatAlpha.toFixed(3)})`;
+
+      // bleach label fades in
+      bleachLabel.style.opacity = (labelP * 0.9).toFixed(3);
+
+      // scroll hint fades out
+      scrollHint.style.opacity = Math.max(1 - p * 4, 0).toFixed(3);
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // initialise
+
+    /* ── Reveal on scroll ─── */
+    const revealEls = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => io.observe(el));
+  </script>
 </body>
 </html>
