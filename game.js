@@ -392,22 +392,22 @@
 
   /* ── Sound (all synthesised with Web Audio, no files) ────────────── */
   const Sound = {
-    ctx: null, master: null, muted: false,
+    ctx: null, master: null, muted: false, active: true,
     init() {
       if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return;
       this.ctx = new AC();
       this.master = this.ctx.createGain();
-      this.master.gain.value = this.muted ? 0 : 0.8;
+      this.master.gain.value = this.muted || !this.active ? 0 : 0.8;
       this.master.connect(this.ctx.destination);
       this.ambient();
     },
     setMuted(m) {
       this.muted = m;
-      if (this.master) this.master.gain.setTargetAtTime(m ? 0 : 0.8, this.ctx.currentTime, 0.05);
+      if (this.master) this.master.gain.setTargetAtTime(m || !this.active ? 0 : 0.8, this.ctx.currentTime, 0.05);
     },
-    ok() { return this.ctx && !this.muted; },
+    ok() { return this.ctx && !this.muted && this.active; },
     /* Living reef soundscape: snapping-shrimp crackle, water swell, fish calls,
        distant bubbles and parrotfish crunching coral, all through a soft
        underwater reverb. Everything is generated; no audio files. */
@@ -465,8 +465,10 @@
       }
       return b;
     },
-    setScene(active) {   // quieter reef while the visitor reads the rest of the page
-      if (this.reef) this.reef.gain.setTargetAtTime(active ? 1 : 0.25, this.ctx.currentTime, 0.6);
+    setScene(active) {   // fade all sound out once the visitor scrolls past the game
+      if (this.active === active) return;
+      this.active = active;
+      if (this.master) this.master.gain.setTargetAtTime(active && !this.muted ? 0.8 : 0, this.ctx.currentTime, 0.4);
     },
     voice(pan, vol) {
       const c = this.ctx, g = c.createGain(); g.gain.value = vol;
@@ -939,8 +941,11 @@
   }
 
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver(([e]) => { st.visible = e.isIntersecting; last = performance.now(); Sound.setScene(e.isIntersecting); }).observe(hero);
+    new IntersectionObserver(([e]) => { st.visible = e.isIntersecting; last = performance.now(); }).observe(hero);
   }
+  const sceneCheck = () => Sound.setScene(hero.getBoundingClientRect().bottom > window.innerHeight * 0.4);
+  window.addEventListener('scroll', sceneCheck, { passive: true });
+  sceneCheck();
   window.addEventListener('resize', layout);
   layout();
   requestAnimationFrame(frame);
