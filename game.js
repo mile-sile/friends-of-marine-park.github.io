@@ -392,34 +392,154 @@
 
   /* ── Sound (all synthesised with Web Audio, no files) ────────────── */
   const Sound = {
-    ctx: null, master: null, muted: false,
+    ctx: null, master: null, muted: false, active: true,
     init() {
       if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
       const AC = window.AudioContext || window.webkitAudioContext;
       if (!AC) return;
       this.ctx = new AC();
       this.master = this.ctx.createGain();
-      this.master.gain.value = this.muted ? 0 : 0.8;
+      this.master.gain.value = this.muted || !this.active ? 0 : 0.8;
       this.master.connect(this.ctx.destination);
       this.ambient();
     },
     setMuted(m) {
       this.muted = m;
-      if (this.master) this.master.gain.setTargetAtTime(m ? 0 : 0.8, this.ctx.currentTime, 0.05);
+      if (this.master) this.master.gain.setTargetAtTime(m || !this.active ? 0 : 0.8, this.ctx.currentTime, 0.05);
     },
-    ok() { return this.ctx && !this.muted; },
+    ok() { return this.ctx && !this.muted && this.active; },
+    /* Living reef soundscape: snapping-shrimp crackle, water swell, fish calls,
+       distant bubbles and parrotfish crunching coral, all through a soft
+       underwater reverb. Everything is generated; no audio files. */
     ambient() {
-      const c = this.ctx, len = c.sampleRate * 4, buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0);
+      const c = this.ctx, sr = c.sampleRate;
+      this.reef = c.createGain(); this.reef.gain.value = 1;
+      const verb = c.createConvolver(); verb.buffer = this.impulse(2.4);
+      const wet = c.createGain(); wet.gain.value = 0.32;
+      this.reef.connect(this.master);
+      this.reef.connect(verb).connect(wet).connect(this.master);
+
+      // white-noise buffer reused by short events
+      this.wn = c.createBuffer(1, sr, sr);
+      const w = this.wn.getChannelData(0);
+      for (let i = 0; i < sr; i++) w[i] = Math.random() * 2 - 1;
+
+      // 1) water swell: brown noise, low-passed, breathing slowly
+      const sl = sr * 6, sb = c.createBuffer(1, sl, sr), sd = sb.getChannelData(0);
       let last = 0;
-      for (let i = 0; i < len; i++) { const w = Math.random() * 2 - 1; last = (last + 0.02 * w) / 1.02; d[i] = last * 3.5; }
-      const src = c.createBufferSource(); src.buffer = buf; src.loop = true;
-      const lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 420;
-      const g = c.createGain(); g.gain.value = 0.22;
-      const lfo = c.createOscillator(); lfo.frequency.value = 0.09;
-      const lg = c.createGain(); lg.gain.value = 0.1; lfo.connect(lg).connect(g.gain);
-      src.connect(lp).connect(g).connect(this.master); src.start(); lfo.start();
-      const drone = c.createOscillator(); drone.frequency.value = 55;
-      const dg = c.createGain(); dg.gain.value = 0.03; drone.connect(dg).connect(this.master); drone.start();
+      for (let i = 0; i < sl; i++) { last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; sd[i] = last * 3.5; }
+      for (let i = 0; i < 2000; i++) { const k = i / 2000; sd[i] = sd[i] * k + sd[sl - 2000 + i] * (1 - k); } // soften loop seam
+      const swell = c.createBufferSource(); swell.buffer = sb; swell.loop = true;
+      const slp = c.createBiquadFilter(); slp.type = 'lowpass'; slp.frequency.value = 320;
+      const sg = c.createGain(); sg.gain.value = 0.15;
+      const slfo = c.createOscillator(); slfo.frequency.value = 0.07;
+      const slg = c.createGain(); slg.gain.value = 0.08; slfo.connect(slg).connect(sg.gain);
+      swell.connect(slp).connect(sg).connect(this.reef); swell.start(); slfo.start();
+
+      // 2) snapping-shrimp crackle: thousands of tiny clicks spread across stereo
+      const cs = 8, cl = sr * cs, cb = c.createBuffer(2, cl, sr);
+      const L = cb.getChannelData(0), R = cb.getChannelData(1);
+      for (let k = 0; k < cs * 110; k++) {
+        const pos = (Math.random() * (cl - 200)) | 0, amp = Math.pow(Math.random(), 3) * 0.9 + 0.04;
+        const pan = Math.random(), n = 12 + ((Math.random() * 50) | 0);
+        for (let j = 0; j < n; j++) {
+          const v = (Math.random() * 2 - 1) * amp * Math.exp(-j / (n * 0.22));
+          L[pos + j] += v * (1 - pan); R[pos + j] += v * pan;
+        }
+      }
+      const crackle = c.createBufferSource(); crackle.buffer = cb; crackle.loop = true;
+      const chp = c.createBiquadFilter(); chp.type = 'highpass'; chp.frequency.value = 1600;
+      const cg = c.createGain(); cg.gain.value = 0.16;
+      const clfo = c.createOscillator(); clfo.frequency.value = 0.05;
+      const clg = c.createGain(); clg.gain.value = 0.05; clfo.connect(clg).connect(cg.gain);
+      crackle.connect(chp).connect(cg).connect(this.reef); crackle.start(); clfo.start();
+
+      // 3) reef life events, scheduled at random
+      setInterval(() => this.reefLife(), 350);
+    },
+    impulse(dur) {
+      const c = this.ctx, len = Math.floor(c.sampleRate * dur), b = c.createBuffer(2, len, c.sampleRate);
+      for (let ch = 0; ch < 2; ch++) {
+        const d = b.getChannelData(ch);
+        for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3.2);
+      }
+      return b;
+    },
+    setScene(active) {   // fade all sound out once the visitor scrolls past the game
+      if (this.active === active) return;
+      this.active = active;
+      if (this.master) this.master.gain.setTargetAtTime(active && !this.muted ? 0.8 : 0, this.ctx.currentTime, 0.4);
+    },
+    voice(pan, vol) {
+      const c = this.ctx, g = c.createGain(); g.gain.value = vol;
+      if (c.createStereoPanner) { const p = c.createStereoPanner(); p.pan.value = pan; g.connect(p).connect(this.reef); }
+      else g.connect(this.reef);
+      return g;
+    },
+    reefLife() {
+      if (!this.ok() || document.hidden) return;
+      const r = Math.random;
+      if (r() < 0.10) this.fishGrunt();
+      if (r() < 0.07) this.fishChirp();
+      if (r() < 0.04) this.fishKnock();
+      if (r() < 0.06) this.distantBubbles();
+      if (r() < 0.07) this.parrotCrunch();
+    },
+    fishGrunt() {   // low pulsed grunt, like a grouper or damselfish
+      const c = this.ctx, t0 = c.currentTime + Math.random() * 0.3;
+      const n = 4 + ((Math.random() * 8) | 0), rate = 16 + Math.random() * 20, f = 85 + Math.random() * 110;
+      const o = c.createOscillator(), env = c.createGain(), lp = c.createBiquadFilter();
+      o.type = 'triangle'; o.frequency.setValueAtTime(f, t0); o.frequency.linearRampToValueAtTime(f * 0.8, t0 + n / rate);
+      lp.type = 'lowpass'; lp.frequency.value = 650;
+      env.gain.value = 0;
+      for (let i = 0; i < n; i++) {
+        const t = t0 + i / rate;
+        env.gain.setValueAtTime(0.0001, t); env.gain.linearRampToValueAtTime(1, t + 0.006); env.gain.exponentialRampToValueAtTime(0.0001, t + 0.035);
+      }
+      o.connect(lp).connect(env).connect(this.voice(Math.random() * 1.6 - 0.8, 0.13 + Math.random() * 0.08));
+      o.start(t0); o.stop(t0 + n / rate + 0.1);
+    },
+    fishChirp() {   // quick little pops and chirps
+      const c = this.ctx, out = this.voice(Math.random() * 1.6 - 0.8, 0.045);
+      const n = 2 + ((Math.random() * 4) | 0), base = 500 + Math.random() * 700, up = Math.random() < 0.6;
+      for (let i = 0; i < n; i++) {
+        const t = c.currentTime + i * (0.08 + Math.random() * 0.07), o = c.createOscillator(), g = c.createGain();
+        o.frequency.setValueAtTime(up ? base : base * 1.6, t); o.frequency.exponentialRampToValueAtTime(up ? base * 1.6 : base, t + 0.05);
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(1, t + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+        o.connect(g).connect(out); o.start(t); o.stop(t + 0.08);
+      }
+    },
+    fishKnock() {   // soft low knocks
+      const c = this.ctx, out = this.voice(Math.random() * 1.4 - 0.7, 0.16);
+      const n = 2 + ((Math.random() * 2) | 0);
+      for (let i = 0; i < n; i++) {
+        const t = c.currentTime + i * (0.12 + Math.random() * 0.05), o = c.createOscillator(), g = c.createGain();
+        o.frequency.setValueAtTime(95, t); o.frequency.exponentialRampToValueAtTime(55, t + 0.07);
+        g.gain.setValueAtTime(1, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+        o.connect(g).connect(out); o.start(t); o.stop(t + 0.1);
+      }
+    },
+    distantBubbles() {   // a stream of bubbles rising somewhere on the reef
+      const c = this.ctx, lp = c.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2400;
+      lp.connect(this.voice(Math.random() * 1.8 - 0.9, 0.05));
+      const n = 3 + ((Math.random() * 6) | 0);
+      for (let i = 0; i < n; i++) {
+        const t = c.currentTime + Math.random() * 0.7, f = 300 + Math.random() * 500, o = c.createOscillator(), g = c.createGain();
+        o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(f * 2.3, t + 0.07);
+        g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(1, t + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.08);
+        o.connect(g).connect(lp); o.start(t); o.stop(t + 0.1);
+      }
+    },
+    parrotCrunch() {   // parrotfish scraping and crunching coral
+      const c = this.ctx, out = this.voice(Math.random() * 1.6 - 0.8, 0.14);
+      const n = 2 + ((Math.random() * 3) | 0), fc = 1300 + Math.random() * 1800;
+      for (let i = 0; i < n; i++) {
+        const t = c.currentTime + i * (0.14 + Math.random() * 0.16), d = 0.03 + Math.random() * 0.04;
+        const src = c.createBufferSource(); src.buffer = this.wn;
+        const bp = c.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = fc; bp.Q.value = 1.4;
+        const g = c.createGain(); g.gain.setValueAtTime(1, t); g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+        src.connect(bp).connect(g).connect(out); src.start(t, Math.random() * 0.5); src.stop(t + d + 0.02);
+      }
     },
     tone(f, dur, { type = 'sine', vol = 0.2, to = null, at = 0, attack = 0.01 } = {}) {
       if (!this.ok()) return;
@@ -823,10 +943,13 @@
   if ('IntersectionObserver' in window) {
     new IntersectionObserver(([e]) => { st.visible = e.isIntersecting; last = performance.now(); }).observe(hero);
   }
+  const sceneCheck = () => Sound.setScene(hero.getBoundingClientRect().bottom > window.innerHeight * 0.4);
+  window.addEventListener('scroll', sceneCheck, { passive: true });
+  sceneCheck();
   window.addEventListener('resize', layout);
   layout();
   requestAnimationFrame(frame);
 
   // Expose a tiny hook for automated checks
-  window.__reef = { st, CREATURES };
+  window.__reef = { st, CREATURES }; window.__sound = Sound;
 })();
